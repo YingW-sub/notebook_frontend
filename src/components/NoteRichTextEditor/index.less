@@ -1,0 +1,61 @@
+.note-rich-text-editor {
+  border-radius: 6px;
+
+  :global(.ql-toolbar.ql-snow) {
+    border-radius: 6px 6px 0 0;
+    border-color: #d9d9d9;
+    flex-wrap: wrap;
+  }
+
+  :global(.ql-container.ql-snow) {
+    border-radius: 0 0 6px 6px;
+    border-color: #d9d9d9;
+    min-height: min(600px, 58vh);
+    font-size: 15px;
+  }
+
+  :global(.ql-editor) {
+    min-height: min(600px, 58vh);
+    line-height: 1.65;
+  }
+
+  :global(.ql-editor.ql-blank::before) {
+    color: rgba(0, 0, 0, 0.25);
+    font-style: normal;
+  }
+
+  /* 批注：以 blockquote 呈现，与正文区分（类似侧栏批注在正文中的锚点样式） */
+  :global(.ql-editor blockquote) {
+    border-left: 4px solid #faad14;
+    background: #fffbe6;
+    margin: 10px 0;
+    padding: 10px 14px;
+    color: rgba(0, 0, 0, 0.78);
+  }
+}
+
+.note-rich-text-editor--expanded {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  height: 100%;
+
+  :global(.ql-toolbar.ql-snow) {
+    flex-shrink: 0;
+  }
+
+  :global(.ql-container.ql-snow) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  :global(.ql-editor) {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
