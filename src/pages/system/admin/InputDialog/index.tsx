@@ -138,7 +138,7 @@ export default function InputDialog(props: InputDialogProps) {
     return (
       <ModalForm
         width={800}
-        title="新建操作员"
+        title="新建用户"
         open={props.visible}
         formRef={createFormRef}
         modalProps={{
@@ -159,7 +159,7 @@ export default function InputDialog(props: InputDialogProps) {
   return (
     <ModalForm
       width={800}
-      title="修改操作员"
+      title="修改用户"
       open={props.visible}
       formRef={createFormRef}
       modalProps={{

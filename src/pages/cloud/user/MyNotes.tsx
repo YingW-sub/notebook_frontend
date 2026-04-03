@@ -4,6 +4,7 @@
 import NoteEditModal, { type NoteEditDraft } from '@/components/NoteEditModal';
 import NoteSortDrawer from '@/components/NoteSortDrawer';
 import NoteViewModal from '@/components/NoteViewModal';
+import { listCategory } from '@/services/api/category';
 import {
   deleteNote,
   importDocument,
@@ -170,6 +171,9 @@ export default () => {
       dataIndex: 'title',
       ellipsis: true,
       width: 200,
+      fieldProps: {
+        placeholder: intl.formatMessage({ id: 'pages.cloud.placeholder.input' }),
+      },
       render: (_, record) => (
         <a
           onClick={() => {
@@ -180,6 +184,23 @@ export default () => {
           {record.title}
         </a>
       ),
+    },
+    {
+      title: intl.formatMessage({ id: 'pages.cloud.col.category' }),
+      dataIndex: 'categoryId',
+      valueType: 'select',
+      hideInTable: true,
+      fieldProps: {
+        allowClear: true,
+        placeholder: intl.formatMessage({ id: 'pages.cloud.col.categoryFilterPh' }),
+      },
+      request: async () => {
+        const res = await listCategory();
+        return (res || []).map((c: Record<string, unknown>) => ({
+          label: String(c.categoryName ?? ''),
+          value: Number(c.id),
+        }));
+      },
     },
     {
       title: intl.formatMessage({ id: 'pages.cloud.col.summary' }),
@@ -334,11 +355,25 @@ export default () => {
         headerTitle={intl.formatMessage({ id: 'pages.cloud.header.myNotes' })}
         actionRef={actionRef}
         rowKey="id"
-        search={false}
         rowSelection={{
           type: 'radio',
           selectedRowKeys,
           onChange: (keys) => setSelectedRowKeys(keys),
+          // radio 再次点击已选行时 Ant Design 不会清空，需在单选格捕获阶段自行取消选中
+          renderCell: (checked, _record, _index, originNode) => (
+            <span
+              role="presentation"
+              onClickCapture={(e) => {
+                if (checked) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedRowKeys([]);
+                }
+              }}
+            >
+              {originNode}
+            </span>
+          ),
         }}
         options={{
           density: true,
@@ -393,10 +428,19 @@ export default () => {
         ]}
         tableAlertRender={false}
         request={async (params) => {
+          const title =
+            typeof params.title === 'string' ? params.title.trim() : undefined;
+          let categoryId: number | undefined;
+          if (params.categoryId != null && params.categoryId !== '') {
+            const n = Number(params.categoryId);
+            if (!Number.isNaN(n)) categoryId = n;
+          }
           const res = await listNote({
             current: params.current || 1,
             pageSize: params.pageSize || 10,
-          });
+            ...(title ? { title } : {}),
+            ...(categoryId != null ? { categoryId } : {}),
+          } as API.NoteQueryDTO);
           return convertPageData(res);
         }}
         columns={columns}

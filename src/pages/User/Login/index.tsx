@@ -5,10 +5,11 @@ import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { FormattedMessage, history, SelectLang, useIntl, useModel, Helmet } from '@umijs/max';
 import { message } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React from 'react';
+import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { login } from '@/services/api/authentication';
 import { playLoginFireworks } from '@/utils/login-fireworks';
+import './index.css';
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -34,6 +35,7 @@ const Lang = () => {
 
 const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -63,7 +65,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     try {
-      // 登录
+      // 调用登录接口
       const msg = await login({ userId: values.username!, password: values.password! });
       if (!msg) return;
 
@@ -73,9 +75,14 @@ const Login: React.FC = () => {
       });
       message.success(defaultLoginSuccessMessage);
       await fetchUserInfo();
+
+      // 特效：触发登录成功状态，激活欢迎界面和烟花特效
+      setIsLoginSuccess(true);
       playLoginFireworks();
+
       const urlParams = new URL(window.location.href).searchParams;
       const target = urlParams.get('redirect') || '/';
+      // 延迟特效：延迟1.4秒跳转，给用户足够时间欣赏欢迎界面和烟花效果
       await new Promise<void>((resolve) => {
         window.setTimeout(resolve, 1400);
       });
@@ -114,8 +121,8 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
+          title="CloudNote"
+          subTitle="把无数个星夜里的思考，酿成未来的回响~"
           initialValues={{
             autoLogin: true,
           }}
@@ -123,6 +130,38 @@ const Login: React.FC = () => {
             await handleSubmit(values);
           }}
         >
+          {/* 登录成功后：与页头一致的浅蓝横条，左文右图 */}
+          {isLoginSuccess && (
+            <div
+              className="welcome-container"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+                marginBottom: 24,
+                padding: '10px 14px',
+                background: '#e6f7ff',
+                borderRadius: 6,
+                border: '1px solid #bae7ff',
+              }}
+            >
+              <span style={{ fontSize: 14, color: 'rgba(0,0,0,0.85)', flex: 1 }}>
+                欢迎登录CloudNote~~
+              </span>
+              <img
+                src="/lanyangyang.jpg"
+                alt="CloudNote"
+                style={{
+                  width: 56,
+                  height: 56,
+                  objectFit: 'cover',
+                  borderRadius: 4,
+                  flexShrink: 0,
+                }}
+              />
+            </div>
+          )}
           <ProFormText
             name="username"
             fieldProps={{
