@@ -2,7 +2,6 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useModel } from '@umijs/max';
 import React from 'react';
-import NotificationBell from '@/components/NotificationBell';
 import Avatar from './AvatarDropdown';
 
 export type SiderTheme = 'light' | 'dark';
@@ -42,7 +41,6 @@ const GlobalHeaderRight: React.FC = () => {
 
   return (
     <div className={className}>
-      <NotificationBell />
       <span
         className={actionClassName}
         onClick={() => {

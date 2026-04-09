@@ -5,7 +5,7 @@ import CardChart from '@/components/CardChart';
 import { getCategoryStatistics } from '@/services/api/note';
 import { AppstoreOutlined, FileTextOutlined } from '@ant-design/icons';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { useIntl } from '@umijs/max';
+import { history, useIntl } from '@umijs/max';
 import { Col, Row, Spin, Statistic } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import './DataStatistics.less';
@@ -17,58 +17,82 @@ const StatCard: React.FC<{
   value: number;
   icon: React.ReactNode;
   color: string;
-}> = ({ title, value, icon, color }) => (
-  <ProCard
-    bordered={false}
-    style={{
-      borderRadius: 12,
-      background: `linear-gradient(135deg, ${color}14 0%, ${color}06 100%)`,
-      border: `1px solid ${color}18`,
-    }}
-    styles={{ body: { padding: '20px 24px' } }}
-  >
-    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 12,
-          background: `linear-gradient(135deg, ${color}22 0%, ${color}10 100%)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 22,
-          color,
-          flexShrink: 0,
-        }}
-      >
-        {icon}
-      </div>
-      <div>
+  onClick?: () => void;
+}> = ({ title, value, icon, color, onClick }) => {
+  const card = (
+    <ProCard
+      bordered={false}
+      style={{
+        borderRadius: 12,
+        background: `linear-gradient(135deg, ${color}14 0%, ${color}06 100%)`,
+        border: `1px solid ${color}18`,
+      }}
+      styles={{ body: { padding: '20px 24px' } }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         <div
           style={{
-            fontSize: 12,
-            color: 'rgba(0,0,0,0.45)',
-            marginBottom: 4,
-            fontWeight: 500,
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            background: `linear-gradient(135deg, ${color}22 0%, ${color}10 100%)`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 22,
+            color,
+            flexShrink: 0,
           }}
         >
-          {title}
+          {icon}
         </div>
-        <Statistic
-          value={value}
-          valueStyle={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: 'rgba(0,0,0,0.88)',
-            lineHeight: 1.2,
-          }}
-          suffix=""
-        />
+        <div>
+          <div
+            style={{
+              fontSize: 12,
+              color: 'rgba(0,0,0,0.45)',
+              marginBottom: 4,
+              fontWeight: 500,
+            }}
+          >
+            {title}
+          </div>
+          <Statistic
+            value={value}
+            valueStyle={{
+              fontSize: 28,
+              fontWeight: 700,
+              color: 'rgba(0,0,0,0.88)',
+              lineHeight: 1.2,
+            }}
+            suffix=""
+          />
+        </div>
       </div>
+    </ProCard>
+  );
+
+  if (!onClick) {
+    return card;
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onClick()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      style={{ cursor: 'pointer', borderRadius: 12 }}
+    >
+      {card}
     </div>
-  </ProCard>
-);
+  );
+};
 
 export default () => {
   const intl = useIntl();
@@ -104,25 +128,27 @@ export default () => {
 
   return (
     <PageContainer>
+      <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+        <Col xs={24} sm={12}>
+          <StatCard
+            title={intl.formatMessage({ id: 'pages.cloud.stats.noteCountMetric' })}
+            value={totalNotes}
+            icon={<FileTextOutlined />}
+            color="#3b82f6"
+            onClick={() => history.push('/cloud/notes/my')}
+          />
+        </Col>
+        <Col xs={24} sm={12}>
+          <StatCard
+            title={intl.formatMessage({ id: 'pages.cloud.stats.categoryCountMetric' })}
+            value={categoryCount}
+            icon={<AppstoreOutlined />}
+            color="#10b981"
+            onClick={() => history.push('/cloud/category')}
+          />
+        </Col>
+      </Row>
       <Spin spinning={loading}>
-        <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
-          <Col xs={24} sm={12}>
-            <StatCard
-              title={intl.formatMessage({ id: 'pages.cloud.stats.noteCountMetric' })}
-              value={totalNotes}
-              icon={<FileTextOutlined />}
-              color="#3b82f6"
-            />
-          </Col>
-          <Col xs={24} sm={12}>
-            <StatCard
-              title={intl.formatMessage({ id: 'pages.cloud.stats.categoryCountMetric' })}
-              value={categoryCount}
-              icon={<AppstoreOutlined />}
-              color="#10b981"
-            />
-          </Col>
-        </Row>
         <Row gutter={[16, 16]}>
           <Col xs={24} lg={12}>
             <ProCard
