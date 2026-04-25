@@ -8,6 +8,7 @@ import { history } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import AiFloatPanel from '@/components/AiFloatPanel';
+import InteractivePet from '@/components/InteractivePet';
 import MeteorBackground from '@/components/MeteorBackground';
 import React from 'react';
 import { getCurrentUser } from './services/api/authentication';
@@ -140,6 +141,7 @@ const stableChildrenRender = (children: React.ReactNode) => (
     <MeteorBackground />
     <div style={{ position: 'relative', minHeight: '100%' }}>{children}</div>
     <AiFloatPanel />
+    <InteractivePet />
     <SettingDrawer
       disableUrlParams
       enableDarkTheme
