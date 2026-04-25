@@ -111,12 +111,13 @@ export default defineConfig({
   access: {},
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
-  /**
-   * 关闭开发态 OpenAPI 自动拉取/写入 node_modules（易因目录创建失败导致 ENOENT 整站崩掉）。
-   * 本项目接口已用手写 src/services/api；若需从 Swagger 生成代码，在后端启动后执行：npm run openapi
-   */
-  openAPI: false,
-  // 项目从其他路径拷贝后，MFSU 缓存会残留旧绝对路径（如 C:/Users/.../Desktop/...），导致构建报错；先关闭 MFSU 或删 .cache 后可改回
+  openAPI: [
+    {
+      requestLibPath: "import { request } from '@umijs/max'",
+      // Swagger/OpenAPI 数据源地址
+      schemaPath: 'http://localhost:9311/v3/api-docs',
+      projectName: 'api',
+    }
+  ],
   mfsu: false,
-  requestRecord: {},
 });
