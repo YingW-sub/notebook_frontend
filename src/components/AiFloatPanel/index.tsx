@@ -18,7 +18,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const MODEL_STORAGE_KEY = 'cloud-notes-ai-float-model';
 
-/** 与后端 /api/ai/modelOptions 一致，首屏未拉到接口时使用 */
 const DEFAULT_OPTIONS = [
   { value: 'qwen-turbo', label: '通义千问 · qwen-turbo（轻量）' },
   { value: 'qwen-plus', label: '通义千问 · qwen-plus' },
@@ -42,7 +41,7 @@ type Opt = { value: string; label: string };
 type Msg = { id: string; role: 'user' | 'assistant'; text: string };
 
 /**
- * 全局悬浮 AI：抽屉内可选具体模型版本（通义 / DeepSeek / Kimi 各多档，走对应 API Key）。
+ * 全局悬浮 AI
  */
 const AiFloatPanel: React.FC = () => {
   const { initialState } = useModel('@@initialState');
@@ -55,15 +54,19 @@ const AiFloatPanel: React.FC = () => {
       return 'qwen-plus';
     }
   });
+
+  // 初始值是一个空数组，且不会去后端数据库拉取数据，所以只要刷新网页，历史对话会立刻清空
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const listEndRef = useRef<HTMLDivElement>(null);
 
+  // 判断是否登录，以及当前是否在登录页面（如果在登录页，就隐藏悬浮窗）
   const loggedIn = Boolean(initialState?.currentToken);
   const onLoginPage =
     typeof window !== 'undefined' && window.location.pathname.startsWith('/user/login');
 
+  // 如果抽屉打开，并且已登录，则获取模型列表
   useEffect(() => {
     if (!open || !loggedIn) return;
     let cancelled = false;
@@ -86,10 +89,12 @@ const AiFloatPanel: React.FC = () => {
     }
   }, [model]);
 
+  // 如果抽屉打开，并且已登录，则获取模型列表
   useEffect(() => {
     listEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading, open]);
 
+  // 执行快捷操作
   const runQuickAction = useCallback(
     async (kind: QuickKind) => {
       const text = input.trim();
@@ -163,18 +168,25 @@ const AiFloatPanel: React.FC = () => {
     },
   ];
 
+  // 发送消息
   const send = useCallback(async () => {
     const text = input.trim();
     if (!text || loading) return;
     const userMsg: Msg = { id: `${Date.now()}-u`, role: 'user', text };
+    // 将用户消息和历史消息合并成数组，用于发给后端
     const historyPayload = [...messages, userMsg].map((m) => ({
       role: m.role,
       content: m.text,
     }));
+
+    // 将当前对话显示在屏幕上（更新 state）
     setMessages((prev) => [...prev, userMsg]);
+    // 清空输入框
     setInput('');
+    // 设置加载状态
     setLoading(true);
     try {
+      // 调用后端 API
       const res = await aiChat(
         { model, messages: historyPayload },
         { throwError: true, skipErrorHandler: true },
@@ -182,6 +194,7 @@ const AiFloatPanel: React.FC = () => {
       const reply = (res?.result ??
         (res as { data?: { result?: string } })?.data?.result ??
         '') as string;
+      // 将 AI 回复显示在屏幕上
       setMessages((prev) => [
         ...prev,
         {
@@ -191,6 +204,7 @@ const AiFloatPanel: React.FC = () => {
         },
       ]);
     } catch (e: unknown) {
+      // 如果请求失败，将错误信息显示在屏幕上
       const err = e as { message?: string; info?: { message?: string } };
       const detail = err?.info?.message || err?.message || '请求失败，请检查网络或稍后重试。';
       setMessages((prev) => [
@@ -202,6 +216,7 @@ const AiFloatPanel: React.FC = () => {
     }
   }, [input, loading, messages, model]);
 
+  // 如果未登录或当前在登录页面，则不显示悬浮窗
   if (!loggedIn || onLoginPage) {
     return null;
   }

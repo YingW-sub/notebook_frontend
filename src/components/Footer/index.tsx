@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
       style={{
         background: 'none',
       }}
-      copyright={`${currentYear} Redlib出品`}
+      copyright={`${currentYear} 喵喵喵出品`}
     />
   );
 };

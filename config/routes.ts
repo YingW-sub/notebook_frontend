@@ -9,9 +9,6 @@
  * @param name 配置路由的标题，默认读取国际化文件 menu.ts 中 menu.xxxx 的值，如配置 name 为 login，则读取 menu.ts 中 menu.login 的取值作为标题
  * @param icon 配置路由的图标，取值参考 https://ant.design/components/icon-cn， 注意去除风格后缀和大小写，如想要配置图标为 <StepBackwardOutlined /> 则取值应为 stepBackward 或 StepBackward，如想要配置图标为 <UserOutlined /> 则取值应为 user 或者 User
  * @doc https://umijs.org/docs/guides/routes
- *
- * 说明：云笔记相关路由一律「扁平」配置（无父级 redirect + NotesLayout 嵌套）。
- * 嵌套 + access 会在 ProLayout SiderMenu 里触发 Maximum update depth exceeded，主区域白屏。
  */
 export default [
   {
@@ -32,7 +29,7 @@ export default [
     component: './Welcome',
   },
 
-  // ── 管理员（root）云笔记 — 扁平路由 ───────────────────────────────
+  // ── 管理员（root） ───────────────────────────────
   {
     path: '/cloud-admin/notes/users',
     name: 'adminUserNotes',
@@ -62,7 +59,7 @@ export default [
     access: 'isRoot',
     component: './cloud/admin/DataStatistics',
   },
-  // ── 普通用户云笔记 — 扁平路由 ─────────────────────────────────────
+  // ── 普通用户云笔记 ─────────────────────────────────────
   {
     path: '/cloud/notes/my',
     name: 'cloudMyNotes',
@@ -107,19 +104,19 @@ export default [
         path: '/system/admin',
         name: 'admin',
         component: './system/admin',
-        access: 'hasPrivilege',
+        access: 'isRoot',
       },
       {
         path: '/system/loginLog',
         name: 'loginLog',
         component: './system/loginLog',
-        access: 'hasPrivilege',
+        access: 'isRoot',
       },
       {
         path: '/system/onlineUser',
         name: 'onlineUser',
         component: './system/onlineUser',
-        access: 'hasPrivilege',
+        access: 'isRoot',
       },
     ],
   },

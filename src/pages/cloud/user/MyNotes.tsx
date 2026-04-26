@@ -1,5 +1,5 @@
 /**
- * 普通用户 — 我的笔记（置顶、排序、导入、收藏、删除等）
+ * 普通用户 — 我的笔记（置顶、排序、导入、收藏、删除）
  */
 import NoteEditModal, { type NoteEditDraft } from '@/components/NoteEditModal';
 import NoteSortDrawer from '@/components/NoteSortDrawer';
@@ -55,6 +55,7 @@ export default () => {
   const [draftKey, setDraftKey] = useState(0);
   const [importBusy, setImportBusy] = useState(false);
 
+  //导出菜单
   const exportMenu = useMemo(
     () => (noteId: number) => ({
       items: [
@@ -78,6 +79,7 @@ export default () => {
     [intl],
   );
 
+  //打开排序抽屉
   const openSortDrawer = async () => {
     try {
       const res = await listNote({ current: 1, pageSize: 2000 });
@@ -89,6 +91,7 @@ export default () => {
     }
   };
 
+  //导入文件
   const onImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -121,6 +124,7 @@ export default () => {
   };
 
   const columns: ProColumns<API.NoteVO>[] = [
+    //置顶
     {
       title: intl.formatMessage({ id: 'pages.cloud.col.pin' }),
       width: 64,
@@ -150,8 +154,8 @@ export default () => {
                   const er = e as { info?: { message?: string }; message?: string };
                   message.error(
                     er?.info?.message ||
-                      er?.message ||
-                      intl.formatMessage({ id: 'pages.cloud.msg.operationFailed' }),
+                    er?.message ||
+                    intl.formatMessage({ id: 'pages.cloud.msg.operationFailed' }),
                   );
                 }
               }}
@@ -220,6 +224,8 @@ export default () => {
           </Tag>
         )),
     },
+
+    //收藏
     {
       title: intl.formatMessage({ id: 'pages.cloud.col.favorite' }),
       dataIndex: 'isStarred',
@@ -243,8 +249,8 @@ export default () => {
               const er = err as { info?: { message?: string }; message?: string };
               message.error(
                 er?.info?.message ||
-                  er?.message ||
-                  intl.formatMessage({ id: 'pages.cloud.msg.favoriteFailed' }),
+                er?.message ||
+                intl.formatMessage({ id: 'pages.cloud.msg.favoriteFailed' }),
               );
             }
           }}
@@ -306,32 +312,32 @@ export default () => {
           </a>,
           <a
             key="del"
-          onClick={() => {
-            Modal.confirm({
-              title: intl.formatMessage({ id: 'pages.cloud.confirm.moveToRecycle' }),
-              okText: intl.formatMessage({ id: 'pages.cloud.common.ok' }),
-              cancelText: intl.formatMessage({ id: 'pages.cloud.common.cancel' }),
-              onOk: async () => {
-                try {
-                  await deleteNote(record.id as number, {
-                    throwError: true,
-                    skipErrorHandler: true,
-                  });
-                  message.success(intl.formatMessage({ id: 'pages.cloud.msg.deleted' }));
-                  actionRef.current?.reload();
-                } catch (e: unknown) {
-                  const er = e as { info?: { message?: string }; message?: string };
-                  message.error(
-                    er?.info?.message ||
+            onClick={() => {
+              Modal.confirm({
+                title: intl.formatMessage({ id: 'pages.cloud.confirm.moveToRecycle' }),
+                okText: intl.formatMessage({ id: 'pages.cloud.common.ok' }),
+                cancelText: intl.formatMessage({ id: 'pages.cloud.common.cancel' }),
+                onOk: async () => {
+                  try {
+                    await deleteNote(record.id as number, {
+                      throwError: true,
+                      skipErrorHandler: true,
+                    });
+                    message.success(intl.formatMessage({ id: 'pages.cloud.msg.deleted' }));
+                    actionRef.current?.reload();
+                  } catch (e: unknown) {
+                    const er = e as { info?: { message?: string }; message?: string };
+                    message.error(
+                      er?.info?.message ||
                       er?.message ||
                       intl.formatMessage({ id: 'pages.cloud.msg.deleteFailed' }),
-                  );
-                  throw e;
-                }
-              },
-            });
-          }}
-        >
+                    );
+                    throw e;
+                  }
+                },
+              });
+            }}
+          >
             <DeleteOutlined /> {intl.formatMessage({ id: 'pages.cloud.action.delete' })}
           </a>,
         ];

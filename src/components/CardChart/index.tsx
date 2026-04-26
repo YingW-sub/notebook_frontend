@@ -1,5 +1,5 @@
 /**
- * 通用卡片图表组件（柱状图 / 饼图，基于已安装的 echarts）
+ * 柱状图 / 饼图
  */
 import EChartsReact from 'echarts-for-react';
 import { useIntl, useModel } from '@umijs/max';

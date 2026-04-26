@@ -40,7 +40,7 @@ function PetHappyBurst() {
   );
 }
 
-/** 右下角桌宠：可配色、可拖动、位置持久化；登录页不显示 */
+/** 桌宠：可拖动、位置持久化；登录页不显示 */
 const InteractivePet: React.FC = () => {
   const { pathname } = useLocation();
   const [settings, setSettings] = useState<DeskPetSettings>(() =>
@@ -228,7 +228,7 @@ const InteractivePet: React.FC = () => {
       window.clearTimeout(timer);
     };
   }, [active]);
-
+  /** 拖动开始 */
   const onDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     dragRef.current = {
@@ -281,8 +281,9 @@ const InteractivePet: React.FC = () => {
         data-pet-color={settings.colorHex}
         data-pet-size={settings.size}
         onMouseDown={onDragStart}
-        title="拖动到任意位置 · 点击互动 · 右上角「外观与桌宠」可改颜色"
+        title="拖动到任意位置 · 点击互动 "
       >
+        {/* 点击互动 */}
         {active ? <PetHappyBurst /> : null}
         <button
           type="button"

@@ -4,15 +4,6 @@ import { useModel } from '@umijs/max';
 import { message } from 'antd';
 import React, { useRef } from 'react';
 
-function hasKickPrivilege(token: API.Token | undefined): boolean {
-  if (!token) return false;
-  if (String(token.userCode || '').toLowerCase() === 'root') return true;
-  const ps = token.privSet as unknown;
-  if (ps instanceof Set) return ps.has('onlineUser.kick');
-  if (Array.isArray(ps)) return ps.includes('onlineUser.kick');
-  return false;
-}
-
 function renderSex(sex: unknown) {
   if (sex === 1 || sex === '1') return '男';
   if (sex === 0 || sex === '0') return '女';
@@ -22,7 +13,7 @@ function renderSex(sex: unknown) {
 const OnlineUserPage: React.FC = () => {
   const refAction = useRef<ActionType>(null);
   const { initialState } = useModel('@@initialState');
-  const canKick = hasKickPrivilege(initialState?.currentToken);
+  const isRoot = String(initialState?.currentToken?.userCode || '').trim().toLowerCase() === 'root';
 
   const columns: ProColumns<API.OnlineUserVO>[] = [
     {
@@ -87,10 +78,7 @@ const OnlineUserPage: React.FC = () => {
       valueType: 'option',
       render: (_, record) => {
         const token = record?.accessToken as string | undefined;
-        if (!canKick) {
-          return <span style={{ color: '#bfbfbf' }}>无踢人权限</span>;
-        }
-        if (!token) {
+        if (!isRoot || !token) {
           return <span style={{ color: '#bfbfbf' }}>—</span>;
         }
         return (
