@@ -1,5 +1,6 @@
 /**
- * 柱状图组件（基于已安装的 echarts）
+ * 柱状图组件
+ * @date 2026-03-25
  */
 import EChartsReact from 'echarts-for-react';
 import * as echarts from 'echarts';

@@ -1,3 +1,7 @@
+/*
+ * 桌宠组件
+ */
+
 .petLayer {
   position: fixed;
   inset: 0;
@@ -21,12 +25,10 @@
     position: absolute;
     inset: -14px -10px -6px;
     border-radius: 50%;
-    background: radial-gradient(
-      ellipse 70% 55% at 50% 58%,
-      var(--pet-aura-1, rgba(251, 182, 206, 0.38)) 0%,
-      var(--pet-aura-2, rgba(253, 224, 231, 0.16)) 45%,
-      transparent 72%
-    );
+    background: radial-gradient(ellipse 70% 55% at 50% 58%,
+        var(--pet-aura-1, rgba(251, 182, 206, 0.38)) 0%,
+        var(--pet-aura-2, rgba(253, 224, 231, 0.16)) 45%,
+        transparent 72%);
     z-index: -2;
     pointer-events: none;
     animation: pet-aura 5s ease-in-out infinite;
@@ -59,12 +61,10 @@
 
 .wrapHappy {
   &::before {
-    background: radial-gradient(
-      ellipse 72% 58% at 50% 56%,
-      var(--pet-aura-happy-1, rgba(252, 165, 165, 0.45)) 0%,
-      var(--pet-aura-happy-2, rgba(253, 224, 231, 0.22)) 48%,
-      transparent 74%
-    );
+    background: radial-gradient(ellipse 72% 58% at 50% 56%,
+        var(--pet-aura-happy-1, rgba(252, 165, 165, 0.45)) 0%,
+        var(--pet-aura-happy-2, rgba(253, 224, 231, 0.22)) 48%,
+        transparent 74%);
     animation-duration: 3.2s;
   }
 }
@@ -127,12 +127,10 @@
     position: absolute;
     inset: 6% 8% 10%;
     border-radius: 46% 46% 40% 40%;
-    background: linear-gradient(
-      165deg,
-      rgba(255, 255, 255, 0.58) 0%,
-      rgba(255, 255, 255, 0) 42%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(165deg,
+        rgba(255, 255, 255, 0.58) 0%,
+        rgba(255, 255, 255, 0) 42%,
+        rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
     opacity: 0.88;
     mix-blend-mode: soft-light;
@@ -249,11 +247,13 @@
 }
 
 @keyframes pet-aura {
+
   0%,
   100% {
     opacity: 0.75;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.04);
@@ -261,11 +261,13 @@
 }
 
 @keyframes pet-ground {
+
   0%,
   100% {
     opacity: 0.85;
     transform: translateX(-50%) scaleX(1);
   }
+
   50% {
     opacity: 0.65;
     transform: translateX(-50%) scaleX(0.92);
@@ -273,13 +275,16 @@
 }
 
 @keyframes pet-float {
+
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
   }
+
   25% {
     transform: translateY(-2.5px) rotate(-1.2deg);
   }
+
   75% {
     transform: translateY(-3.5px) rotate(1.2deg);
   }
@@ -289,12 +294,15 @@
   0% {
     transform: scale(1) rotate(0deg);
   }
+
   40% {
     transform: scale(1.08) rotate(-4deg);
   }
+
   70% {
     transform: scale(0.98) rotate(3deg);
   }
+
   100% {
     transform: scale(1) rotate(0deg);
   }
@@ -305,10 +313,12 @@
     opacity: 0;
     transform: translateX(-50%) translateY(12px) scale(0.6);
   }
+
   28% {
     opacity: 1;
     transform: translateX(-50%) translateY(-4px) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateX(-50%) translateY(-42px) scale(0.85);
@@ -320,11 +330,13 @@
     opacity: 0;
     transform: translateY(2px);
   }
+
   35%,
   70% {
     opacity: 1;
     transform: translateY(-5px);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-12px);

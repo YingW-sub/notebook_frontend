@@ -88,7 +88,7 @@ export default function InputDialog(props: InputDialogProps) {
   const [lockLoginName, setLockLoginName] = useState(false);
 
   const initEditData = useCallback(async (id: number) => {
-    // getAdmin 需要传数字 id；误传 { id } 会导致后端收到字符串 "{\"id\":n}\" 而报错
+    // getAdmin 需要传数字 id
     const result = await getAdmin(id);
     if (result) {
       createFormRef.current?.setFieldsValue({
@@ -118,7 +118,6 @@ export default function InputDialog(props: InputDialogProps) {
   }, [props.id, props.visible, initEditData]);
 
   const onSubmitCreate = async (values: Record<string, unknown>) => {
-    // 新建不传 modList，后端 applyDefaultEndUserPrivileges：笔记 + 分类 的 page/add/update/delete
     const { modList: _m, ...rest } = values;
     await addAdmin(rest as API.AdminDTO);
     message.success('保存成功');
@@ -150,7 +149,7 @@ export default function InputDialog(props: InputDialogProps) {
       >
         <BasicInfoFields userCodeDisabled={false} isEdit={false} />
         <Typography.Paragraph type="secondary" style={{ marginBottom: 0, marginTop: 8 }}>
-          新建账号将自动开通云笔记功能：笔记与分类的查看、新建、修改、删除（含收藏、回收站等）
+          新建账号将自动开通云笔记功能：笔记与分类的查看、新建、修改、删除
         </Typography.Paragraph>
       </ModalForm>
     );

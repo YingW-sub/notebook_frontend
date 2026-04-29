@@ -82,7 +82,7 @@ const Login: React.FC = () => {
 
       const urlParams = new URL(window.location.href).searchParams;
       const target = urlParams.get('redirect') || '/';
-      // 延迟特效：延迟1.4秒跳转，给用户足够时间欣赏欢迎界面和烟花效果
+      // 延迟特效：延迟1.4秒跳转
       await new Promise<void>((resolve) => {
         window.setTimeout(resolve, 1400);
       });
@@ -130,7 +130,7 @@ const Login: React.FC = () => {
             await handleSubmit(values);
           }}
         >
-          {/* 登录成功后：与页头一致的浅蓝横条，左文右图 */}
+          {/* 登录成功后，弹出懒羊羊表情包 */}
           {isLoginSuccess && (
             <div
               className="welcome-container"

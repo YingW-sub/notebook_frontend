@@ -1,5 +1,5 @@
 /**
- * 管理员（root）— 全站用户笔记，只读（与基础数据-部门管理同款 ProTable：查询栏、列设置、工具栏）
+ * 管理员（root）— 全站用户笔记，只读
  */
 import { listNote } from '@/services/api/note';
 import { convertPageData } from '@/utils/request';
